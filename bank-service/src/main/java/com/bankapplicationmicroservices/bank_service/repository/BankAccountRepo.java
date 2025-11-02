@@ -1,0 +1,14 @@
+package com.bankapplicationmicroservices.bank_service.repository;
+
+import com.bankapplicationmicroservices.bank_service.entity.AccountType;
+import com.bankapplicationmicroservices.bank_service.entity.BankAccount;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface BankAccountRepo extends JpaRepository<BankAccount, Long> {
+    @Query(value = "SELECT * FROM bank_account ORDER BY balance DESC LIMIT 5", nativeQuery = true)
+    List<BankAccount> findTop5AccountsByBalance();
+    List<BankAccount> findByAccountType(AccountType accountType);
+}
