@@ -9,5 +9,5 @@ import java.util.Set;
 public class RegisterRequest {
     @NotBlank private String username;
     @NotBlank private String password;
-    private Set<String> roles; // e.g. ["ADMIN","USER"]
+    private Set<String> roles;
 }

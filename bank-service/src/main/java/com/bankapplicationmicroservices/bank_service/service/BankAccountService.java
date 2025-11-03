@@ -43,13 +43,26 @@ public class BankAccountService {
         return mapper.toDto(saved);
     }
 
-    public List<BankAccountDto> all() {
-        return repo.findAll().stream().map(mapper::toDto).toList();
+    // ADD: customer-scoped reads
+    public List<BankAccountDto> byCustomer(Long customerId) {
+        return repo.findByCustomerId(customerId).stream().map(mapper::toDto).toList();
+    }
+
+
+    public BankAccountDto getForCustomer(Long accountId, Long customerId) {
+        BankAccount acc = repo.findByAccountIdAndCustomerId(accountId, customerId)
+                .orElseThrow(() -> new BankAccountNotFoundException(
+                        "Account " + accountId + " not found for customer " + customerId));
+        return mapper.toDto(acc);
     }
 
     public BankAccountDto get(Long id) {
         if (!repo.existsById(id)) throw new BankAccountNotFoundException("Account not found: " + id);
         return mapper.toDto(findEntity(id));
+    }
+
+    public List<BankAccountDto> all() {
+        return repo.findAll().stream().map(mapper::toDto).toList();
     }
 
     public void delete(Long id) {

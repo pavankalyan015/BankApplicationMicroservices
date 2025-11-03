@@ -27,10 +27,22 @@ public class BankAccountController {
         return service.all();
     }
 
+    @GetMapping(params = "customerId")
+    public List<BankAccountDto> byCustomer(@RequestParam Long customerId) {
+        return service.byCustomer(customerId);
+    }
+
+    @GetMapping(value = "/{id}", params = "customerId")
+    public BankAccountDto getForCustomer(@PathVariable("id") Long accountId,
+                                         @RequestParam Long customerId) {
+        return service.getForCustomer(accountId, customerId);
+    }
+
     @GetMapping("/{id}")
     public BankAccountDto get(@PathVariable Long id) {
         return service.get(id);
     }
+
 
     @DeleteMapping("/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)

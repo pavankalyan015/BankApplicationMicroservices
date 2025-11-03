@@ -1,4 +1,5 @@
 package com.bankapplicationmicroservices.bank_service.exception;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,6 +86,26 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    //----------------
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponce> handleForbidden(ForbiddenException ex, HttpServletRequest req) {
+        ExceptionResponce body = new ExceptionResponce(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                ex.getMessage(),
+                req.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
+
+
+
+    //----------
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponce> handleAll(Exception ex, WebRequest request) {
         ex.printStackTrace();

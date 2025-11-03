@@ -39,7 +39,6 @@ public class UserService {
         users.save(u);
     }
 
-    /** Performs username/password check and returns token */
     public AuthResponse login(String username, String rawPassword) {
         User user = users.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("bad credentials"));
@@ -47,7 +46,7 @@ public class UserService {
             throw new RuntimeException("bad credentials");
         }
         var roles = user.getRoles().stream().map(Role::getName).toList();
-        String token = jwt.generateToken(user.getUsername(), roles);
+        String token = jwt.generateToken(user.getId(), user.getUsername(), roles); // <-- include userId
         return new AuthResponse(token, jwt.getExpiresIn());
     }
 }

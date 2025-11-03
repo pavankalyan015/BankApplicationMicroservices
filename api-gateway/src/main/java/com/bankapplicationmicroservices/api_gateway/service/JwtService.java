@@ -20,12 +20,13 @@ public class JwtService {
     @Value("${jwt.expiration-seconds}")
     private long expirationSeconds;
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(Long userId, String username, List<String> roles) {
         Instant now = Instant.now();
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issueTime(Date.from(now))
                 .expirationTime(Date.from(now.plusSeconds(expirationSeconds)))
+                .claim("userId", String.valueOf(userId))   // <-- ownership claim
                 .claim("roles", roles)
                 .build();
         try {
