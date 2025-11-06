@@ -23,11 +23,16 @@ public class CustomerController {
         return "Customer-Service";
     }
 
-    @PostMapping(path="/create")
-    public ResponseEntity<CustomerDto> createCustomer(@RequestBody @Valid CustomerDto customerDto){
+    @PostMapping(path="/create/{id}")
+    public ResponseEntity<CustomerDto> createCustomer(@RequestBody @Valid CustomerDto customerDto,
+                                                      @PathVariable Long id) {
+
+        customerDto.setCustomerId(id);
+
         CustomerDto created = customerService.createCustomer(customerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+
 
     @GetMapping(path="/{id}")
     public CustomerDto getCustomerById(@PathVariable Long id){

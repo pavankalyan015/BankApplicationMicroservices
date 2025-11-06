@@ -88,11 +88,55 @@ public class SecurityConfig {
         var getCustomerById = new PathPatternParserServerWebExchangeMatcher(
                 "/customer-service/customers/{id}", HttpMethod.GET);
 
+
+        var updateCustomer = new PathPatternParserServerWebExchangeMatcher(
+                "/customer-service/customers/{id}/update", HttpMethod.PUT);
+
+        var deleteCustomer = new PathPatternParserServerWebExchangeMatcher(
+                "/customer-service/customers/{id}/delete", HttpMethod.DELETE);
+
+        var createCustomer = new PathPatternParserServerWebExchangeMatcher(
+                "/customer-service/customers/create/{id}", HttpMethod.POST);
+
+
+
+
+        //---
+
         var getAccountsByCustomerQuery = new PathPatternParserServerWebExchangeMatcher(
                 "/bank-service/accounts", HttpMethod.GET);
 
         var getAccountsByCustomerQuerySlash = new PathPatternParserServerWebExchangeMatcher(
                 "/bank-service/accounts/", HttpMethod.GET);
+
+        //------------------
+
+        var getAccountByIdWithCustomer = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/{id}", HttpMethod.GET);
+
+        var getBalance = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/{id}/balance", HttpMethod.GET);
+
+        var withdraw = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/{id}/withdraw", HttpMethod.PUT);
+
+        var deposit = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/{id}/deposit", HttpMethod.PUT);
+
+        var createAccount = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/create", HttpMethod.POST);
+
+        var updateAccount = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/{id}/update", HttpMethod.PUT);
+
+        var deleteAccount = new PathPatternParserServerWebExchangeMatcher(
+                "/bank-service/accounts/{id}/delete", HttpMethod.DELETE);
+
+
+
+
+
+        //-------------------
 
 
         http.csrf(ServerHttpSecurity.CsrfSpec::disable)
@@ -102,15 +146,43 @@ public class SecurityConfig {
         http.authorizeExchange(ex -> ex
                 .pathMatchers("/auth/**").permitAll()
 
-                .pathMatchers(HttpMethod.GET, "/customer-service/customers/all").hasRole("ADMIN")
+
+
                 .matchers(getCustomerById).access(ownsByPathVar(getCustomerById, "id"))
+                .matchers(updateCustomer).access(ownsByPathVar(updateCustomer, "id"))
+                .matchers(deleteCustomer).access(ownsByPathVar(deleteCustomer, "id"))
+                .matchers(createCustomer).access(ownsByPathVar(createCustomer,"id"))
+
+
+
+                // .matchers(getCustomerById).access(ownsByQueryParam("customerId"))
+               // .matchers(updateCustomer).access(ownsByQueryParam("customerId"))
+               // .matchers(deleteCustomer).access(ownsByQueryParam("customerId"))
+               // .matchers(createCustomer).access(ownsByQueryParam("customerId"))
+
+                .pathMatchers(HttpMethod.GET, "/customer-service/customers/all").hasRole("ADMIN")
                 .pathMatchers(HttpMethod.POST,   "/customer-service/**").hasRole("ADMIN")
                 .pathMatchers(HttpMethod.PUT,    "/customer-service/**").hasRole("ADMIN")
                 .pathMatchers(HttpMethod.DELETE, "/customer-service/**").hasRole("ADMIN")
                 .pathMatchers("/customer-service/**").authenticated()
 
 
+                //-------------------
 
+                .matchers(getAccountsByCustomerQuery).access(ownsByQueryParam("customerId"))
+                .matchers(getAccountsByCustomerQuerySlash).access(ownsByQueryParam("customerId"))
+                .matchers(getAccountByIdWithCustomer).access(ownsByQueryParam("customerId"))
+                .matchers(getBalance).access(ownsByQueryParam("customerId"))
+                .matchers(withdraw).access(ownsByQueryParam("customerId"))
+                .matchers(deposit).access(ownsByQueryParam("customerId"))
+                .matchers(createAccount).access(ownsByQueryParam("customerId"))
+                .matchers(updateAccount).access(ownsByQueryParam("customerId"))
+                .matchers(deleteAccount).access(ownsByQueryParam("customerId"))
+
+
+
+
+                //--------------------
                 .pathMatchers(HttpMethod.GET, "/bank-service/accounts/all").hasRole("ADMIN")
                 .matchers(getAccountsByCustomerQuery).access(ownsByQueryParam("customerId"))
                 .matchers(getAccountsByCustomerQuerySlash).access(ownsByQueryParam("customerId")) // <— ADD THIS

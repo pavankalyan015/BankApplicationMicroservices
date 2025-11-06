@@ -20,6 +20,7 @@ public class CustomerService {
 
     public CustomerDto createCustomer(CustomerDto dto){
         Customer entity = customerMapper.toEntity(dto);
+        entity.setCustomerId(dto.getCustomerId());   // <-- ADD THIS LINE (use setId(...) if your field name is 'id')
         Customer saved = customerRepo.save(entity);
         return customerMapper.toDto(saved);
     }

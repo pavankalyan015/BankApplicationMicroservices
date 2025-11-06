@@ -18,7 +18,9 @@ public class BankAccountController {
     private final BankAccountService service;
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public BankAccountDto create(@Valid @RequestBody BankAccountDto dto) {
+    public BankAccountDto create(@Valid @RequestBody BankAccountDto dto, @RequestParam Long customerId) {
+        if(customerId!=dto.getCustomerId())
+            throw new RuntimeException("Not allowed");
         return service.create(dto);
     }
 
@@ -46,27 +48,30 @@ public class BankAccountController {
 
     @DeleteMapping("/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id,  @RequestParam Long customerId) {
+
         service.delete(id);
     }
 
     @PutMapping("/{id}/update")
-    public BankAccountDto update(@PathVariable Long id, @Valid @RequestBody BankAccountDto dto) {
+    public BankAccountDto update(@PathVariable Long id, @Valid @RequestBody BankAccountDto dto,  @RequestParam Long customerId) {
+        if(customerId!=dto.getCustomerId())
+            throw new RuntimeException("Not allowed");
         return service.update(id, dto);
     }
 
     @GetMapping("/{id}/balance")
-    public Double balance(@PathVariable Long id) {
+    public Double balance(@PathVariable Long id,  @RequestParam Long customerId) {
         return service.get(id).getBalance();
     }
 
     @PutMapping("/{id}/withdraw")
-    public BankAccountDto withdraw(@PathVariable Long id, @RequestParam double amount) {
+    public BankAccountDto withdraw(@PathVariable Long id, @RequestParam double amount,  @RequestParam Long customerId) {
         return service.withdraw(id, amount);
     }
 
     @PutMapping("/{id}/deposit")
-    public BankAccountDto deposit(@PathVariable Long id, @RequestParam double amount) {
+    public BankAccountDto deposit(@PathVariable Long id, @RequestParam double amount,  @RequestParam Long customerId) {
         return service.deposit(id, amount);
     }
 

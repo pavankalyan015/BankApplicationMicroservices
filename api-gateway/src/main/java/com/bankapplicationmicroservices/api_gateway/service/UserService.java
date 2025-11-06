@@ -39,7 +39,7 @@ public class UserService {
         users.save(u);
     }
 
-    public AuthResponse login(String username, String rawPassword) {
+/*    public AuthResponse login(String username, String rawPassword) {
         User user = users.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("bad credentials"));
         if (!user.isEnabled() || !encoder.matches(rawPassword, user.getPassword())) {
@@ -47,6 +47,21 @@ public class UserService {
         }
         var roles = user.getRoles().stream().map(Role::getName).toList();
         String token = jwt.generateToken(user.getId(), user.getUsername(), roles); // <-- include userId
-        return new AuthResponse(token, jwt.getExpiresIn());
+        return new AuthResponse(token, jwt.getExpiresIn(), user.getId());
+    }*/
+
+    public AuthResponse login(String username, String rawPassword) {
+        User user = users.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("bad credentials"));
+
+        if (!user.isEnabled() || !encoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("bad credentials");
+        }
+
+        var roles = user.getRoles().stream().map(Role::getName).toList();
+        String token = jwt.generateToken(user.getId(), user.getUsername(), roles);
+
+        return new AuthResponse(token, jwt.getExpiresIn(), user.getId());
     }
+
 }
